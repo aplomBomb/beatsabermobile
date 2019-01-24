@@ -46,8 +46,10 @@ class App extends Component {
           Beat Saber Companion
         </Text>
         <SearchBar
-          round
+          platform="android"
           placeholder="Search Beat Saver..."
+          searchIcon={null}
+          // onChangeText={() => {}}
           onSubmitEditing={userSearch => {
             this.props.navigation.dispatch(
               StackActions.reset({
