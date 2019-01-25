@@ -6,7 +6,7 @@ import {
   StackActions,
   NavigationActions
 } from "react-navigation";
-
+import axios from "axios";
 import NewSongData from "./Components/NewSongData";
 import SearchSongData from "./Components/SearchSongData";
 import { SearchBar } from "react-native-elements";
@@ -29,6 +29,35 @@ class App extends Component {
   //   alert({ value });
   // };
 
+  state = {
+    userInput: "",
+    searchData: []
+    
+  };
+
+  handleUserSearch = input => {
+    this.getSongs(input);
+  };
+
+  onSubmit = (value, e) => {
+    e.preventDefault();
+    value.handleUserSearch(this.state.userInput);
+  };
+
+  async getSongs(userSearch) {
+    try {
+      const response = await Axios.get(
+        `https://beatsaver.com/api/songs/search/all/${userSearch}`
+      );
+      this.setState({
+        searchData: response.data.songs,
+        alert({searchData})
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   render() {
     return (
       <View
@@ -49,19 +78,10 @@ class App extends Component {
           platform="android"
           placeholder="Search Beat Saver..."
           searchIcon={null}
-          // onChangeText={() => {}}
-          onSubmitEditing={userSearch => {
-            this.props.navigation.dispatch(
-              StackActions.reset({
-                index: 0,
-                actions: [
-                  NavigationActions.navigate({
-                    routeName: "SearchSongs"
-                  })
-                ]
-              })
-            );
+          onChangeText={() => {
+            this.setState({ userInput: event.target.value });
           }}
+          onSubmitEditing={this.onSubmit.bind(this, value)}
         />
         <Button
           title="New Songs"
